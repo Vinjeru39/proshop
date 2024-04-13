@@ -4,8 +4,11 @@ import { apiSlice } from "./apiSlice";
 export const productsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: () => ({
+      query: ({ pageNumber }) => ({
         url: PRODUCTS_URL,
+        params: {
+          pageNumber,
+        },
       }),
       providesTags: ["Products"], //otherwise you may hv to refetch the page when a new product is created
       keepUnusedDataFor: 5, //seconds. Hover over to see what it does
