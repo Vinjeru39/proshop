@@ -5,12 +5,17 @@ import Product from "../models/productModel.js";
 // @route GET /api/products
 // @access Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 4; //number of products per page
+  const pageSize = 8; //number of products per page
   const page = Number(req.query.pageNumber) || 1;
-  //The page number thats in the url i.e. the req.query
-  const count = await Product.countDocuments(); //The total number of products
 
-  const products = await Product.find({})
+  const keyword = req.query.keyword
+    ? { name: { $regex: req.query.keyword, $options: "i" } }
+    : {}; //this way even if e.g. the keyword is phone and we have iphone in the shop it will stil match i.e. not direcly exact //options there for case insensitive
+
+  //The page number thats in the url i.e. the req.query
+  const count = await Product.countDocuments({ ...keyword }); //The total number of products
+
+  const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1)); //Skip the pages that are before e.g. if we are on page 3 skip page 1 and 2
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
@@ -132,6 +137,14 @@ const createProductReview = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc Get top rated products
+// @route GET /api/products/top
+// @access Public
+const getTopProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  res.status(200).json(products);
+});
+
 export {
   getProducts,
   getProductById,
@@ -139,4 +152,5 @@ export {
   updateProduct,
   deleteProduct,
   createProductReview,
+  getTopProducts,
 };
