@@ -36,7 +36,7 @@ const LoginScreen = () => {
       dispatch(setCredentials({ ...res }));
       navigate(redirect); //homepage or shipping
     } catch (err) {
-      toast(err?.data?.message || err.error);
+      toast.error(err?.data?.message || err.error);
     }
   };
 

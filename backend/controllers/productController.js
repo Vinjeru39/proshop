@@ -21,6 +21,12 @@ const getProducts = asyncHandler(async (req, res) => {
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
+const getProductsFromMobile = asyncHandler(async (req, res) => {
+  console.log("We here man");
+  const products = await Product.find({});
+  res.status(200).json(products);
+});
+
 // @desc Fetch a product
 // @route GET /api/products/:id
 // @access Public
@@ -153,4 +159,5 @@ export {
   deleteProduct,
   createProductReview,
   getTopProducts,
+  getProductsFromMobile,
 };
